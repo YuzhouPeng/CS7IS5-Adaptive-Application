@@ -31,7 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'adaptive_dashboard.apps.AdaptiveDashboardConfig'
+    'adaptive_dashboard.apps.AdaptiveDashboardConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -79,8 +79,8 @@ WSGI_APPLICATION = 'AdaptiveApplication.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'citymanage',
-        'USER': 'citymanager',
+        'NAME': 'adaptive_database',
+        'USER': 'adaptiveuser',
         'PASSWORD': 'password',
     }
 }

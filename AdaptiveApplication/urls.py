@@ -26,5 +26,4 @@ urlpatterns = [
     path('index/', adaptive_dashboard_views.index, name='index'),
     path('monitor/', adaptive_dashboard_views.monitor, name='monitor'),
     path('logout/', adaptive_dashboard_views.logout, name='logout'),
-    url(r'captcha', include('captcha.urls'))
 ]
