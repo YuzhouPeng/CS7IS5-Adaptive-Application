@@ -1,0 +1,112 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Latest compiled and minified CSS -->
+    <link href="{% static "css/dashboard.css" %}" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>>
+
+</head>
+
+<body>
+<div class="container">
+    <h3 class="text-center">User Profile</h3>
+    <hr>
+    <div class="col-xs-12">
+        <p class="lead">Please choose the topics that you are interested in</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-4 col-sm-offset-3 col-md-offset-4">
+            <div class="panel panel-default">
+                <!-- Default panel contents -->
+                <div class="panel-heading">Topics</div>
+                <form action="/dashboard/" method="post" >
+                    {% csrf_token %}
+                    <!-- List group -->
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            Music
+                            <div class="material-switch pull-right">
+                                <input id="someSwitchOptionDefault" name="someSwitchOption001" type="checkbox" value="Music"/>
+                                <label for="someSwitchOptionDefault" class="label-default"></label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            Sport
+                            <div class="material-switch pull-right">
+                                <input id="someSwitchOptionPrimary" name="someSwitchOption001" type="checkbox" value="Sport"/>
+                                <label for="someSwitchOptionPrimary" class="label-primary"></label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            Movie
+                            <div class="material-switch pull-right">
+                                <input id="someSwitchOptionSuccess" name="someSwitchOption001" type="checkbox" value="Movie"/>
+                                <label for="someSwitchOptionSuccess" class="label-success"></label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            Book
+                            <div class="material-switch pull-right">
+                                <input id="someSwitchOptionInfo" name="someSwitchOption001" type="checkbox" value="Book"/>
+                                <label for="someSwitchOptionInfo" class="label-info"></label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            Drama
+                            <div class="material-switch pull-right">
+                                <input id="someSwitchOptionWarning" name="someSwitchOption001" type="checkbox" value="Drama"/>
+                                <label for="someSwitchOptionWarning" class="label-warning"></label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            Dance
+                            <div class="material-switch pull-right">
+                                <input id="someSwitchOptionDanger" name="someSwitchOption001" type="checkbox" value="Dance"/>
+                                <label for="someSwitchOptionDanger" class="label-danger"></label>
+                            </div>
+                        </li>
+                        <li class="list-group-item" >
+                            <input type="submit" class="signout_btn" value="Submit" id="Submit" onclick="checkbox()"/>
+
+                        </li>
+                    </ul>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script>
+function checkbox()
+{
+    var str=document.getElementsByName("someSwitchOption001");
+    var objarray=str.length;
+    var chestr = [];
+    for (i=0;i<objarray;i++)
+    {
+      if(str[i].checked == true)
+      {
+       chestr.push(str[i].value);
+      }
+    }
+    if(chestr.length == 0)
+    {
+        console.log(chestr)
+      alert("Please choose at least one.");
+    }
+    else
+    {
+      alert("Topics which you like："+chestr);
+    }
+}
+
+</script>
+
+</html>

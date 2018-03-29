@@ -56,6 +56,9 @@ def register(request):
     register_form = form.RegisterForm()
     return render(request, 'register.html', locals())
 
+    register_form = form.Topic()
+    return render(request, 'dashboard.html', locals())
+
 
 def logout(request):
     if not request.session.get('is_login', None):
@@ -75,10 +78,32 @@ def monitor(request):
     pass
     return render(request, 'monitor.html')
 
+def dashboard(request):
+    print("INSIDE DASHBOARD")
+    if request.method == "POST":
+        print("INSIDE POST")
+        # register_form = form.Dashboard(request.POST)
+        topics = request.POST.getlist('someSwitchOption001')
+        print("TOPICS------------:"+str(topics))
+        # username = request.session['user_id']
+        if request.session.get('is_login', None) is not None:
+            if(request.session['is_login'] == True ):
+                print(request.session.get('user_name'))
+
+                user = models.User.objects.get(name=request.session['user_name'])
+                user.interest = topics
+                user.save()
+                print('save successfully!')
+            return redirect('/contact/')
+
+    return render(request, 'dashboard.html')
+
+
+
 def login(request):
     #send_mail('subject', 'message', 'pengyuzhou2017@sina.com', ['pengyuzhou760783896@gmail.com'], fail_silently=False)
-    if request.session.get('is_login',None):
-        return redirect("/index/")
+   # if request.session.get['is_login']:
+   #     return redirect("/dashboard/")
     #test error 500
     #test_error_500_view()
     if request.method == "POST":
@@ -93,12 +118,13 @@ def login(request):
                     request.session['is_login'] = True
                     request.session['user_id'] = user.id
                     request.session['user_name'] = user.name
-                    return redirect('/index/')
+                    return redirect('/dashboard/')
                 else:
                     message = "Password incorrect"
             except:
                 message = "Non-exist user"
-        return render(request, 'login.html', locals())
+        # return render(request, 'dashboard.html', locals())
+        return redirect('/dashboard/')
 
     login_form = form.UserForm()
     return render(request, 'login.html', locals())
@@ -112,3 +138,5 @@ def hash_code(s, salt='mysite'):
 
 def test_error_500_view(request):
     return HttpResponseServerError()
+
+

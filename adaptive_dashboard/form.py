@@ -15,3 +15,6 @@ class RegisterForm(forms.Form):
     password2 = forms.CharField(label="confirmpassword", max_length=128, widget=forms.TextInput(attrs={'class': 'form-control'}))
     email = forms.EmailField(label="emailaddress", widget=forms.TextInput(attrs={'class': 'form-control'}))
     sex = forms.ChoiceField(label='gender', choices=gender)
+
+# class Dashboard(forms.Form):
+#     topics = forms.getlist('checks')

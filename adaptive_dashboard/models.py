@@ -13,10 +13,20 @@ class User(models.Model):
         ('female',"Female"),
         ('other',"Other"),
     )
+
+    topics = (
+        ('music', "Music"),
+        ('sport', "Sport"),
+        ('movie', "Movie"),
+        ('book', "Book"),
+        ('drama', "Drama"),
+        ('dance', "Dance"),
+    )
     name = models.CharField(max_length=128)
     password = models.CharField(max_length=128)
     email = models.CharField(max_length=128)
     sex = models.CharField(max_length=32, choices=gender, default='Male')
+    interest = models.CharField( max_length=128 )
     create_time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
