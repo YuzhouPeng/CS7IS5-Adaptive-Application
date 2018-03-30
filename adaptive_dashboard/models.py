@@ -60,6 +60,12 @@ class Keywords(models.Model):
     similarity = models.FloatField()
     summary = models.TextField()
 
+# class UserTopic(models.Model):
+#     """"""
+#
+#     user =
+#     topic =
+#     count = models.IntegerField(default=0)
 
 
 

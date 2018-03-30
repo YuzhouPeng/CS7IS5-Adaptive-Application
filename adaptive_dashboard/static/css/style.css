@@ -1,59 +1,131 @@
 html, body {
-  padding: 0;
-  margin: 0;
+    padding: 0;
+    margin: 0;
 }
 
 .hide-me {
-  visibility: hidden;
-  opacity: 0;
-  transform: scale(.75);
+    visibility: hidden;
+    opacity: 0;
+    transform: scale(.75);
 }
 
 h1 {
-  margin-top: 0;
-  font-size: 2.4em;
-  font-weight: normal;
-  display: inline-block;
+    margin-top: 0;
+    font-size: 2.4em;
+    font-weight: normal;
+    display: inline-block;
 }
 
 body {
-  font-family: Helvetica, sans-serif;
-  padding: 50px 10%;
+    font-family: Helvetica, sans-serif;
+    padding: 50px 10%;
 }
 
 button {
-  background-color: #046380;
-  color: #FFF;
-  border: none;
-  padding: 10px 15px;
-  font-size: 15px;
-  border-radius: 4px;
-  cursor: pointer;
-  outline: none;
-  box-shadow: 2px 2px 0 #034154;
-  margin-bottom: 10px;
-  margin-left: 18px;
-  transition: opacity .4s ease-out, transform .4s ease-out, visibility .4s ease-out;
-  position: relative;
-  top: -10px;
+    background-color: #046380;
+    color: #FFF;
+    border: none;
+    padding: 10px 15px;
+    font-size: 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    outline: none;
+    box-shadow: 2px 2px 0 #034154;
+    margin-bottom: 10px;
+    margin-left: 18px;
+    transition: opacity .4s ease-out, transform .4s ease-out, visibility .4s ease-out;
+    position: relative;
+    top: -10px;
 }
 
 button:hover {
-  background-color: #034F66;
+    background-color: #034F66;
 }
 
 button:active {
-  background-color: #034154;
-  box-shadow: none;
-  position: relative;
-  top: -8px;
-  left: 2px;
+    background-color: #034154;
+    box-shadow: none;
+    position: relative;
+    top: -8px;
+    left: 2px;
 }
 
 p {
-  padding: 4px 0 2px 8px;
-  line-height: 1.7;
-  border-bottom: 1px dotted #DDD;
-  list-style: none;
-  margin: 0;
+    padding: 4px 0 2px 8px;
+    line-height: 1.7;
+    border-bottom: 1px dotted #DDD;
+    list-style: none;
+    margin: 0;
+}
+
+.back-drop {
+    overflow: auto;
+}
+
+.highlight {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.highlight {
+    background-color: yellow;
+}
+
+/*#popup{*/
+    /*width: 300px;*/
+    /*height: 250px;*/
+    /*position: absolute;*/
+    /*border:1px solid #E5E5E5;*/
+    /*display: none;*/
+    /*z-index: 100;*/
+    /*color:#666;*/
+    /*border-radius: 4px;*/
+    /*z-index: 1020;*/
+    /*background: #fff;*/
+/*}*/
+
+/*.close {*/
+    /*position: relative;*/
+    /*float:right;*/
+    /*top:3px;*/
+    /*right:5px;*/
+    /*padding:5px;*/
+    /*cursor: pointer;*/
+/*}*/
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
 }

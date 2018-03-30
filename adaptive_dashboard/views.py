@@ -21,10 +21,21 @@ CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 #@login_required(login_url='/login')
 #@cache_page(CACHE_TTL)
 def wikipage(request):
-    page = models.Page.objects.get(id = 1)
-    return render(request, 'wiki-page.html', {
-        "page": json.dumps(model_to_dict(page))
-    })
+    page_id = 2
+    page = models.Page.objects.get(id = page_id)
+    keywords = models.Keywords.objects.filter(page_id= page_id).order_by('start_index')
+    keywords_list = list()
+    for keyword in keywords:
+        retKey = {
+            "name": keyword.name,
+            "start_index": keyword.start_index,
+            "end_index": keyword.end_index,
+            "similarity": keyword.similarity,
+            "summary": keyword.summary
+        }
+        keywords_list.append(retKey)
+    print(keywords)
+    return render(request, 'wiki-page.html', { "page": json.dumps(model_to_dict(page)),"keywords": json.dumps(keywords_list)})
 
 
 def index(request):
