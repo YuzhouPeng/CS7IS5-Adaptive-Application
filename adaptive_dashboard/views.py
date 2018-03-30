@@ -1,3 +1,4 @@
+from django.forms import model_to_dict
 from django.shortcuts import render
 
 # Create your views here.
@@ -10,6 +11,7 @@ from adaptive_dashboard import form
 from django.contrib import sessions
 import hashlib
 from django.http import HttpResponseServerError
+import json
 # from django.contrib.auth.decorators import login_required
 # from django.core.mail import send_mail
 # from django.views.decorators.cache import cache_page
@@ -18,9 +20,17 @@ CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 #@login_required(login_url='/login')
 #@cache_page(CACHE_TTL)
+def wikipage(request):
+    page = models.Page.objects.get(id = 1)
+    return render(request, 'wiki-page.html', {
+        "page": json.dumps(model_to_dict(page))
+    })
+
+
 def index(request):
     return render(request, 'index.html')
-
+def test(request):
+    return render(request, 'test.html')
 
 def register(request):
     if request.session.get('is_login', None):

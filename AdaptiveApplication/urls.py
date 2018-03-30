@@ -26,4 +26,7 @@ urlpatterns = [
     path('index/', adaptive_dashboard_views.index, name='index'),
     path('monitor/', adaptive_dashboard_views.monitor, name='monitor'),
     path('logout/', adaptive_dashboard_views.logout, name='logout'),
+    path('test/', adaptive_dashboard_views.test, name='test'),
+    path('wikipage/', adaptive_dashboard_views.wikipage, name='wikipage'),
+
 ]

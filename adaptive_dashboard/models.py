@@ -32,50 +32,35 @@ class Attitude(models.Model):
 class PageId(models.Model):
     pageid = models.IntegerField
 
+
 class Topics(models.Model):
     """"""
     name = models.CharField(max_length=128)
 
-class Keywords(models.Model):
-    """"""
-    name = models.CharField(max_length=128)
-    topic = models.ForeignKey(
-        Topics,
-        on_delete=models.CASCADE,
-    )
 
 class Page(models.Model):
     """"""
-    userid = models.ForeignKey(
-        User,
+    topics = models.ForeignKey(
+        Topics,
         on_delete=models.CASCADE,
     )
-    pageid = models.ForeignKey(
-        PageId,
-        on_delete=models.CASCADE,
-    )
-    keyword = models.ForeignKey(
-        Keywords,
-        on_delete=models.CASCADE,
-    )
-    opinion = models.ForeignKey(
-        Attitude,
-        on_delete=models.CASCADE,
-    )
+    page_name = models.CharField(max_length=128)
+    content = models.TextField()
 
 
-class Records(models.Model):
+class Keywords(models.Model):
     """"""
-    username = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
+    page = models.ForeignKey(
+        Page,
+        on_delete=models.CASCADE
     )
-    pageid = models.ForeignKey(
-        PageId,
-        on_delete=models.CASCADE,
-    )
-    totallink = models.IntegerField(max_length=128)
-    effectivelink = models.IntegerField(max_length=128)
-    weight = models.FloatField(max_length=128)
+    name = models.CharField(max_length=128)
+    start_index = models.IntegerField(null=True)
+    end_index = models.IntegerField(null=True)
+    similarity = models.FloatField()
+    summary = models.TextField()
+
+
+
 
 

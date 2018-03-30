@@ -1,0 +1,13 @@
+<html>
+<head>
+</head>
+<body>
+    <div id="content"></div>
+</body>
+<script type="text/javascript">
+        var page = {{ page|safe }};
+    </script>
+    {% load static %}
+    <link rel="stylesheet" href={% static 'css/style.css' %}>
+    <script type="text/javascript" src={% static 'js/main.js' %}></script>
+</html>
