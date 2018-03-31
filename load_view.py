@@ -3,11 +3,11 @@ import pickle
 import os, os.path
 
 # Contains the file path for the pickle files
-filepath = "./output-sport/"
+filepath = "./output-sports-2/"
 
 # Name of the CSV files
-PAGE_ID_FILE = 'pageID.csv'
-KEYWORDS_FILE = 'keywords.csv'
+PAGE_ID_FILE = 'pageID_1.csv'
+KEYWORDS_FILE = 'keywords_1.csv'
 
 # Store the topics in a dictionary. Currently we have two topics
 topic_dict = {"Music"   : 1,

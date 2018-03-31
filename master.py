@@ -23,7 +23,7 @@ def run_all(model, titles, topics):
         all_data, content = wiki_parser.get_wiki_data(model, topics, title)
         # load into db/csv
         print("writing data")
-        with open(('output-sport/' + title + '.p'), 'wb') as fp:
+        with open(('output-sports-2/' + title + '.p'), 'wb') as fp:
             pickle.dump({
                 "topic": "Sports",
                 "page": title,
@@ -35,5 +35,6 @@ if __name__ == '__main__':
     # get titles here
     sport = ["sport", "sports", "athletics", "running", "cricket", "football"]
     music = ["songs", "song", "music", "rock", "band", "sing"]
-    # run_all(init(), ["Music", "Harmony", "Chromaticism", "Rock_music", "Alternative_rock", "Singing", "Jazz"])
+    # run_all(init(), ["Music", "Harmony", "Chromaticism", "Rock_music", "Alternative_rock", "Singing", "Jazz"], music)
     run_all(init(), ["Sport", "Cricket", "Football", "Rugby football", "Sport of athletics", "Running"], sport)
+    # run_all(init(), ["Chromaticism"], music)

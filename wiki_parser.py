@@ -1,5 +1,6 @@
 import wikipedia
 import bs4 as bs
+import re
 import numpy as np
 
 """Get the article details such as Name, link, index of link on page, summary
@@ -21,7 +22,6 @@ def get_wiki_data(model, topic_keys, page_name):
     # tlist = [s.replace(' ', '_') for s in tlist]
 
     links = soup.findAll('a')
-    tcontent_lower = tcontent.lower()
     link_dict = {}
     for link in links:
         try:
@@ -33,8 +33,10 @@ def get_wiki_data(model, topic_keys, page_name):
             for topic_key in topic_keys:
                 similarity = max(similarity, model.similarity(topic_key, search_value))
             # if link.string == "study of the history of music":
-            k = tcontent_lower.find(link.string.lower())
-            if k > -1:
+            # k = tcontent.find(link.string)
+            word = re.search('\\b' + link.string + '\\b', tcontent)
+            if word:
+                k = word.start()
                 # val = link['href'].replace("/wiki/", "").replace("(", "").replace(")", "") + "   " + str(k)
                 link_dict[link['title']] = {'index_start': k,
                                             'index_end': k+len(link.string),
