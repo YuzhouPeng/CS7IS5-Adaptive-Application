@@ -8,7 +8,6 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from adaptive_dashboard import models
 from adaptive_dashboard import form
-from django.contrib import sessions
 import hashlib
 from django.http import HttpResponseServerError
 import json
@@ -18,10 +17,12 @@ import json
 
 CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
-#@login_required(login_url='/login')
-#@cache_page(CACHE_TTL)
-def wikipage(request):
-    page_id = 2
+
+def wikipage(request, pageid):
+    page_id = pageid
+    if request.is_ajax() and request.method == 'GET':
+        page_id = request.GET.get('page_id', None)
+
     page = models.Page.objects.get(id = page_id)
     keywords = models.Keywords.objects.filter(page_id= page_id).order_by('start_index')
     keywords_list = list()
@@ -35,7 +36,7 @@ def wikipage(request):
         }
         keywords_list.append(retKey)
     print(keywords)
-    return render(request, 'wiki-page.html', { "page": json.dumps(model_to_dict(page)),"keywords": json.dumps(keywords_list)})
+    return render(request, 'wiki-page.html', { "page": json.dumps(model_to_dict(page)),"keywords": json.dumps(keywords_list), 'page_id':page_id})
 
 
 def index(request):
@@ -99,7 +100,7 @@ def monitor(request):
 def login(request):
     #send_mail('subject', 'message', 'pengyuzhou2017@sina.com', ['pengyuzhou760783896@gmail.com'], fail_silently=False)
     if request.session.get('is_login',None):
-        return redirect("/index/")
+        return redirect("/wikipage/")
     #test error 500
     #test_error_500_view()
     if request.method == "POST":
@@ -114,7 +115,8 @@ def login(request):
                     request.session['is_login'] = True
                     request.session['user_id'] = user.id
                     request.session['user_name'] = user.name
-                    return redirect('/index/')
+                    request.session['user_page_id'] = 1
+                    return redirect('/wikipage/1')
                 else:
                     message = "Password incorrect"
             except:

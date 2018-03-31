@@ -1,37 +1,50 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <title>WikiPage</title>
 </head>
 <body>
-<div id="content"></div>
-<div class="popup">
-    <a href="#">Popup</a>
-</div>
-<br>
-<div id = "popup">
-    <h2 class = "close">Content</h2>
-    123
-</div>
-<div id="myModal" class="modal">
+<div>
+    {% extends 'base.html' %}
+    {% block title %}Main Page{% endblock %}
+    {% block content %}
+        {% if request.session.is_login %}
+            <div id="content"></div>
 
-  <!-- Modal content -->
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <div id="wiki-content"></div>
-  </div>
+            <div id="myModal" class="modal">
+
+                <!-- Modal content -->
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <div id="wiki-content"></div>
+                </div>
+
+            </div>
+            <br>
+            <div class=" page-button">
+                <button id="btn1" value="LastPage">Last Page</button>
+                <button id="btn2" value="NextPage">Next Page</button>
+            </div>
+            <script type="text/javascript">
+                var page = {{ page|safe }};
+                var keywords = {{ keywords|safe }};
+                var page_id = {{ page_id|safe }};
+            </script>
+            {% block main %}
+            {% endblock %}
+            <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+            <script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+            <!-- Consider also adding Bootstrap.js here! -->
+            {% block extra_js %}{% endblock extra_js %}
+            {% load static %}
+            <link rel="stylesheet" href={% static 'css/style.css' %}>
+            <script type="text/javascript" src={% static 'js/main.js' %}></script>
+        {% else %}
+            <h1>You need to login to access management system</h1>
+        {% endif %}
+    {% endblock %}
 
 </div>
 </body>
-<script type="text/javascript">
-    var page = {{ page|safe }};
-    var keywords = {{ keywords|safe }};
-</script>
-{% block main %}
-{% endblock %}
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<!-- Consider also adding Bootstrap.js here! -->
-{% block extra_js %}{% endblock extra_js %}
-{% load static %}
-<link rel="stylesheet" href={% static 'css/style.css' %}>
-<script type="text/javascript" src={% static 'js/main.js' %}></script>
 </html>

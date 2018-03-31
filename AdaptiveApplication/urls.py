@@ -13,7 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.urls import path
+from django.urls import path, re_path
 from django.conf.urls import *
 from adaptive_dashboard import views as adaptive_dashboard_views
 from django.contrib import admin
@@ -26,7 +26,6 @@ urlpatterns = [
     path('index/', adaptive_dashboard_views.index, name='index'),
     path('monitor/', adaptive_dashboard_views.monitor, name='monitor'),
     path('logout/', adaptive_dashboard_views.logout, name='logout'),
-    path('test/', adaptive_dashboard_views.test, name='test'),
-    path('wikipage/', adaptive_dashboard_views.wikipage, name='wikipage'),
+    re_path(r'^wikipage/(?P<pageid>\w+)/$', adaptive_dashboard_views.wikipage, name='wikipage'),
 
 ]
