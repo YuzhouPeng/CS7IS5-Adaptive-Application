@@ -10,9 +10,10 @@ var bodyobj = document.body;
 
 btn1.addEventListener("click", CheckPageId());
 
+var wiky = require('wiky.js');
 
 function CheckPageId() {
-    var pageCounter = page_id.valueOf();
+    var pageCounter = pageId.valueOf();
     if (pageCounter <= 1) {
         btn1.classList.add("hide-me");
     }
@@ -35,6 +36,7 @@ function CheckPageId() {
 }
 
 
+
 function init(updatedPage) {
     if (!updatedPage) {
         updatedPage = page
@@ -48,6 +50,10 @@ function init(updatedPage) {
     var offset = 0;
     var last_end_index = -1;
     for (keyword of keywords) {
+        if (!keyword['start_index']) {
+            continue;
+        }
+
         var spanStart = "<span id='" + keyword['name'] + "' class='highlight'>";
         var spanEnd = "</span>";
 
@@ -80,11 +86,16 @@ function init(updatedPage) {
     // highlight(keywordsText);
     document.body.appendChild(headingNode);
     var content = document.createElement("div");
-    content.innerHTML = contentText.replace(/\n/g, "<br/>");
+    // content.innerHTML = contentText.replace(/\n/g, "<br/>");
+
+    content.innerHTML = wiky.process(contentText, {'link-image': false});
+
     document.body.appendChild(content);
     // contentContainer.innerHTML = content;
 
     var modal = document.getElementById('myModal');
+    var showNum = document.getElementById('show-num');
+    showNum.innerHTML = showLen + " / "  + totalLen;
     var btns = document.getElementsByClassName("highlight");
     var span = document.getElementsByClassName("close")[0];
 
@@ -99,6 +110,10 @@ function init(updatedPage) {
 
             wikiContentCont.innerText = myContent[0]['summary'];
             modal.style.display = "block";
+            $.get('/model-update', {'topic': page['topics'], 'page': pageId}, function(data) {
+                console.log(data);
+            });
+
         }
     }
 
@@ -116,16 +131,16 @@ function init(updatedPage) {
 }
 
 
-function highlight(text) {
-    inputText = document.getElementById("content");
-    var innerHTML = inputText.innerHTML;
-    var index = innerHTML.indexOf(text);
-    if (index >= 0) {
-        innerHTML = innerHTML.substring(0, index) + "<span class='highlight'>" + innerHTML.substring(index, index + text.length) + "</span>" + innerHTML.substring(index + text.length);
-        inputText.innerHTML = innerHTML;
-    }
-
-}
+// function highlight(text) {
+//     inputText = document.getElementById("content");
+//     var innerHTML = inputText.innerHTML;
+//     var index = innerHTML.indexOf(text);
+//     if (index >= 0) {
+//         innerHTML = innerHTML.substring(0, index) + "<span class='highlight'>" + innerHTML.substring(index, index + text.length) + "</span>" + innerHTML.substring(index + text.length);
+//         inputText.innerHTML = innerHTML;
+//     }
+//
+// }
 
 
 function show(obj) {
@@ -143,17 +158,17 @@ function hide(obj) {
 }
 
 $("#btn1").click(function(event){
-    var url_string = new URL(window.location.href);
-    var name = url_string.pathname;
-    var pageNum = Number(name.split("/")[2]);
-    window.location.href = "../" + (pageNum-1);
+    $.get('/page-change', {'last-page':pageId, 'topic': page['topics']}, function(data) {
+        console.log(data);
+    });
+    window.location.href = "../" + (pageId-1);
 });
 
 $("#btn2").click(function(event){
-    var url_string = new URL(window.location.href);
-    var name = url_string.pathname;
-    var pageNum = Number(name.split("/")[2]);
-    window.location.href = "../"+(pageNum+1);
+    $.get('/page-change', {'last-page':pageId, 'topic': page['topics']}, function(data) {
+        console.log(data);
+    });
+    window.location.href = "../"+(pageId+1);
 });
 
 // close[0].addEventListener("click", function () {

@@ -25,9 +25,12 @@ class User(models.Model):
         ordering = ["-create_time"]
         verbose_name = "user"
         verbose_name_plural = "user"
+
+
 class Attitude(models.Model):
     name = models.CharField(max_length=128)
     weight = models.FloatField(max_length=128)
+
 
 class PageId(models.Model):
     pageid = models.IntegerField
@@ -60,12 +63,20 @@ class Keywords(models.Model):
     similarity = models.FloatField()
     summary = models.TextField()
 
-# class UserTopic(models.Model):
-#     """"""
-#
-#     user =
-#     topic =
-#     count = models.IntegerField(default=0)
+class UserTopic(models.Model):
+    """"""
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
+    topic = models.ForeignKey(
+        Topics,
+        on_delete=models.CASCADE
+    )
+    total_count = models.IntegerField(default=0)
+    last_page_count = models.IntegerField(default=0)
+    last_page_id = models.IntegerField(default=0)
+    topic_score = models.FloatField(default=0.5)
 
 
 

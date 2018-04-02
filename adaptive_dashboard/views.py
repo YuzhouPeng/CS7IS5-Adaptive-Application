@@ -9,8 +9,9 @@ from django.shortcuts import redirect
 from adaptive_dashboard import models
 from adaptive_dashboard import form
 import hashlib
-from django.http import HttpResponseServerError
+from django.http import HttpResponseServerError, HttpResponse
 import json
+import operator
 # from django.contrib.auth.decorators import login_required
 # from django.core.mail import send_mail
 # from django.views.decorators.cache import cache_page
@@ -18,13 +19,96 @@ import json
 CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 
+def get_adaptive_keywords(user_id, topic_id, page_id):
+    user_topic, created = models.UserTopic.objects.get_or_create(
+        topic_id=topic_id,
+        user_id=user_id, defaults={
+            'total_count': 0,
+            'last_page_count': 0,
+            'last_page_id': 0})
+    if created:
+        return models.Keywords.objects.filter(page_id=page_id).order_by('start_index')
+    else:
+        if user_topic.topic_score > 0.1:
+            updated_topic_score = cal_score(user_topic.topic_score, user_topic.last_page_count)
+            user_topic.topic_score = updated_topic_score
+            user_topic.save()
+
+        keywords = models.Keywords.objects.filter(page_id=page_id, start_index__isnull=False).order_by('-similarity')
+        num_keywords = len(keywords)
+
+        ret_num = int(num_keywords*(user_topic.topic_score))
+        keyfun = operator.attrgetter('start_index')
+        filtered_keywords = keywords[:ret_num]
+        # filtered_keywords.sort(key=lambda x: x.start_index)
+        new_filtered_keywords = sorted(filtered_keywords, key=keyfun)
+        return new_filtered_keywords
+
+
+def cal_score(t_scr, k):
+    if k >= 2 and k <= 4:
+        a = 0.6
+    elif k >= 5:
+        a = 0.2
+    else:
+        a = 1.5
+    score = (pow(a, t_scr) - 1) / (a - 1)
+    return score
+
+
+def page_change(request):
+    if request.is_ajax() and request.method == 'GET':
+        last_page_id = int(request.GET.get('last-page', None))
+        topic_id = request.GET.get('topic', None)
+        if request.session.get('is_login', None):
+            user_id = request.session['user_id']
+        user_topic = models.UserTopic.objects.get(topic_id=topic_id, user_id=user_id)
+        if user_topic.last_page_id != last_page_id:
+            user_topic.last_page_count = 0
+            updated_topic_score = cal_score(user_topic.topic_score, user_topic.last_page_count)
+            user_topic.topic_score = updated_topic_score
+            user_topic.save()
+        user_topic.last_page_id = last_page_id
+        user_topic.save()
+        return HttpResponse(json.dumps({"status": "page change event noted."}))
+
+
+def model_update(request):
+    if request.is_ajax() and request.method == 'GET':
+        topic_id = request.GET.get('topic', None)
+        page_id = int(request.GET.get('page', None))
+        if request.session.get('is_login', None):
+            user_id = request.session['user_id']
+            user_topic, created = models.UserTopic.objects.get_or_create(
+                topic_id=topic_id,
+                user_id=user_id, defaults= {
+                    'total_count': 0,
+                    'last_page_count': 0,
+                    'last_page_id': 0})
+            user_topic.total_count = user_topic.total_count + 1
+            if page_id != user_topic.last_page_id:
+                user_topic.last_page_count = 0
+                user_topic.last_page_id = page_id
+            user_topic.last_page_count += 1
+            user_topic.save()
+        else:
+            return redirect('/login/')
+
+        return HttpResponse(json.dumps({"status": "model will remember this..."}))
+
+
 def wikipage(request, pageid):
     page_id = pageid
-    if request.is_ajax() and request.method == 'GET':
-        page_id = request.GET.get('page_id', None)
 
     page = models.Page.objects.get(id = page_id)
-    keywords = models.Keywords.objects.filter(page_id= page_id).order_by('start_index')
+    if request.session.get('is_login', None):
+        user_id = request.session['user_id']
+    else:
+        return redirect('/login/')
+
+    keywords = get_adaptive_keywords(user_id=user_id, topic_id=page.topics_id, page_id=page_id)
+    total_keywords = models.Keywords.objects.filter(page_id=page_id).count()
+    shown_keywords = len(keywords)
     keywords_list = list()
     for keyword in keywords:
         retKey = {
@@ -32,11 +116,11 @@ def wikipage(request, pageid):
             "start_index": keyword.start_index,
             "end_index": keyword.end_index,
             "similarity": keyword.similarity,
-            "summary": keyword.summary
+            "summary": keyword.summary,
         }
         keywords_list.append(retKey)
-    print(keywords)
-    return render(request, 'wiki-page.html', { "page": json.dumps(model_to_dict(page)),"keywords": json.dumps(keywords_list), 'page_id':page_id})
+    return render(request, 'wiki-page.html', { "page": json.dumps(model_to_dict(page)),"keywords": json.dumps(keywords_list), 'page_id':page_id, "shown_len": shown_keywords,
+            "total_len":total_keywords})
 
 
 def index(request):

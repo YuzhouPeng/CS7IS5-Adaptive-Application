@@ -23,23 +23,29 @@
             </div>
             <br>
             <div class=" page-button">
-                <button id="btn1" value="LastPage">Last Page</button>
+                <div id = "show-num"></div>
+                <button id="btn1" value="LastPage">Previous Page</button>
                 <button id="btn2" value="NextPage">Next Page</button>
             </div>
+
             <script type="text/javascript">
                 var page = {{ page|safe }};
                 var keywords = {{ keywords|safe }};
-                var page_id = {{ page_id|safe }};
+                var pageId = {{ page_id|safe }};
+                var showLen = {{ shown_len|safe }};
+                var totalLen = {{ total_len|safe }};
             </script>
             {% block main %}
             {% endblock %}
             <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
             <script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+{#            <script src="https://cdn.jsdelivr.net/npm/parsoid-jsapi@0.0.1/index.min.js"></script>#}
+{#            <script data-main="scripts/main" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.min.js"></script>#}
             <!-- Consider also adding Bootstrap.js here! -->
             {% block extra_js %}{% endblock extra_js %}
             {% load static %}
             <link rel="stylesheet" href={% static 'css/style.css' %}>
-            <script type="text/javascript" src={% static 'js/main.js' %}></script>
+            <script type="text/javascript" src={% static 'js/bundle.js' %}></script>
         {% else %}
             <h1>You need to login to access management system</h1>
         {% endif %}
