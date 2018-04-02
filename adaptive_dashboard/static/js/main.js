@@ -95,7 +95,7 @@ function init(updatedPage) {
 
     var modal = document.getElementById('myModal');
     var showNum = document.getElementById('show-num');
-    showNum.innerHTML = showLen + " / "  + totalLen;
+    showNum.innerHTML = "<p style='right: 30%;'>"+ "Shown links: "+ showLen + " / "  + totalLen+"</p>";
     var btns = document.getElementsByClassName("highlight");
     var span = document.getElementsByClassName("close")[0];
 
