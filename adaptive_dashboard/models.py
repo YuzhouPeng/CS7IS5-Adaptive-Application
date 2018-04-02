@@ -75,7 +75,8 @@ class UserTopic(models.Model):
     )
     total_count = models.IntegerField(default=0)
     last_page_count = models.IntegerField(default=0)
-    last_page_id = models.IntegerField(default=0)
+    last_page_id_of_topic = models.IntegerField(default=0)
+    model_updated = models.IntegerField(default=0)
     topic_score = models.FloatField(default=0.5)
 
 

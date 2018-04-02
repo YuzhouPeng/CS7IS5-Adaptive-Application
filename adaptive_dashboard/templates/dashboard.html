@@ -1,0 +1,70 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Latest compiled and minified CSS -->
+    <link href="{% static "css/dashboard.css" %}" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+
+</head>
+
+<body>
+<div class="container">
+    <h3 class="text-center">User Profile</h3>
+    <hr>
+    <div class="col-xs-12">
+        <p class="lead">Please choose the topics that you are interested in</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-4 col-sm-offset-3 col-md-offset-4">
+            <div class="panel panel-default">
+                <!-- Default panel contents -->
+                <div class="panel-heading">Topics</div>
+                <form action="/dashboard/" method="post" >
+                    {% csrf_token %}
+                    <!-- List group -->
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            Music
+                            <div class="material-switch pull-right">
+                                <input id="someSwitchOptionDefault" name="someSwitchOption001" type="checkbox" value="1"/>
+                                <label for="someSwitchOptionDefault" class="label-default"></label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            Sport
+                            <div class="material-switch pull-right">
+                                <input id="someSwitchOptionPrimary" name="someSwitchOption001" type="checkbox" value="2"/>
+                                <label for="someSwitchOptionPrimary" class="label-primary"></label>
+                            </div>
+                        </li>
+                        <li class="list-group-item" >
+                            <input type="submit" class="signout_btn" value="Submit" id="Submit" onclick="checkbox()"/>
+
+                        </li>
+                    </ul>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script>
+function checkbox()
+{
+    var str=document.getElementsByName("someSwitchOption001");
+    var objarray=str.length;
+    var chestr = [];
+    for (i=0;i<objarray;i++) {
+        if(str[i].checked == true) {
+            chestr.push(str[i].value);
+        }
+    }
+}
+</script>
+
+</html>

@@ -43,6 +43,7 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if request.session.is_login %}
+                    <li><a href="/dashboard/"> Update profile settings </a> </li>
                     <li><a href="#">User：{{ request.session.user_name }}</a></li>
                     <li><a href="/logout/">Logout</a></li>
                 {% else %}

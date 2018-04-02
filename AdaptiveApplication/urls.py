@@ -28,6 +28,6 @@ urlpatterns = [
     path('logout/', adaptive_dashboard_views.logout, name='logout'),
     re_path(r'^wikipage/(?P<pageid>\w+)/$', adaptive_dashboard_views.wikipage, name='wikipage'),
     path('model-update', adaptive_dashboard_views.model_update, name='modelupdate'),
-    path('page-change', adaptive_dashboard_views.page_change, name='pagechange')
-
+    path('page-change', adaptive_dashboard_views.page_change, name='pagechange'),
+    path('dashboard/', adaptive_dashboard_views.dashboard, name='dashboard'),
 ]

@@ -25,28 +25,25 @@ def get_adaptive_keywords(user_id, topic_id, page_id):
         user_id=user_id, defaults={
             'total_count': 0,
             'last_page_count': 0,
-            'last_page_id': 0})
-    if created:
-        return models.Keywords.objects.filter(page_id=page_id).order_by('start_index')
-    else:
-        if user_topic.topic_score > 0.1:
-            updated_topic_score = cal_score(user_topic.topic_score, user_topic.last_page_count)
-            user_topic.topic_score = updated_topic_score
-            user_topic.save()
+            'last_page_id_of_topic': 0})
 
-        keywords = models.Keywords.objects.filter(page_id=page_id, start_index__isnull=False).order_by('-similarity')
-        num_keywords = len(keywords)
+    update_user_topic(user_topic)
 
-        ret_num = int(num_keywords*(user_topic.topic_score))
-        keyfun = operator.attrgetter('start_index')
-        filtered_keywords = keywords[:ret_num]
-        # filtered_keywords.sort(key=lambda x: x.start_index)
-        new_filtered_keywords = sorted(filtered_keywords, key=keyfun)
-        return new_filtered_keywords
+    keywords = models.Keywords.objects.filter(page_id=page_id, start_index__isnull=False).order_by('-similarity')
+    num_keywords = len(keywords)
+
+    ret_num = int(num_keywords * user_topic.topic_score)
+    keyfun = operator.attrgetter('start_index')
+    filtered_keywords = keywords[:ret_num]
+    # filtered_keywords.sort(key=lambda x: x.start_index)
+    new_filtered_keywords = sorted(filtered_keywords, key=keyfun)
+    return new_filtered_keywords
 
 
 def cal_score(t_scr, k):
-    if k >= 2 and k <= 4:
+    if (t_scr <= 0.11 and k == 0) or k == 1:
+        return t_scr
+    if 2 <= k <= 4:
         a = 0.6
     elif k >= 5:
         a = 0.2
@@ -56,20 +53,41 @@ def cal_score(t_scr, k):
     return score
 
 
+def update_user_topic(user_topic):
+    if user_topic.last_page_id_of_topic != 0:
+        updated_topic_score = cal_score(user_topic.topic_score, user_topic.last_page_count)
+        user_topic.topic_score = updated_topic_score
+        user_topic.save()
+
+
 def page_change(request):
     if request.is_ajax() and request.method == 'GET':
         last_page_id = int(request.GET.get('last-page', None))
         topic_id = request.GET.get('topic', None)
         if request.session.get('is_login', None):
             user_id = request.session['user_id']
+
+        # all_user_topics = models.UserTopic.objects.filter(user_id=user_id)
+        # for all_user_topic in all_user_topics:
+        #     all_user_topic.last_page_id = last_page_id
+        #     all_user_topic.save()
+
         user_topic = models.UserTopic.objects.get(topic_id=topic_id, user_id=user_id)
-        if user_topic.last_page_id != last_page_id:
+        # if user_topic.last_page_id_of_topic != last_page_id:
+        #     user_topic.last_page_count = 0
+        #     update_user_topic(user_topic)
+        user_topic.last_page_id_of_topic = last_page_id
+        if user_topic.model_updated == 0:
             user_topic.last_page_count = 0
-            updated_topic_score = cal_score(user_topic.topic_score, user_topic.last_page_count)
-            user_topic.topic_score = updated_topic_score
             user_topic.save()
-        user_topic.last_page_id = last_page_id
-        user_topic.save()
+
+        new_page_id = int(request.GET.get('new-page', None))
+        new_page_topic_id = models.Page.objects.get(id=new_page_id).topics_id
+
+        new_user_topic = models.UserTopic.objects.get(topic_id=new_page_topic_id, user_id=user_id)
+        new_user_topic.model_updated = 0
+        new_user_topic.save()
+
         return HttpResponse(json.dumps({"status": "page change event noted."}))
 
 
@@ -84,11 +102,12 @@ def model_update(request):
                 user_id=user_id, defaults= {
                     'total_count': 0,
                     'last_page_count': 0,
-                    'last_page_id': 0})
+                    'last_page_id_of_topic': 0})
             user_topic.total_count = user_topic.total_count + 1
-            if page_id != user_topic.last_page_id:
-                user_topic.last_page_count = 0
-                user_topic.last_page_id = page_id
+            # if page_id != user_topic.last_page_id_of_topic:
+            #     user_topic.last_page_count = 0
+            user_topic.last_page_id_of_topic = page_id
+            user_topic.model_updated = 1
             user_topic.last_page_count += 1
             user_topic.save()
         else:
@@ -121,6 +140,35 @@ def wikipage(request, pageid):
         keywords_list.append(retKey)
     return render(request, 'wiki-page.html', { "page": json.dumps(model_to_dict(page)),"keywords": json.dumps(keywords_list), 'page_id':page_id, "shown_len": shown_keywords,
             "total_len":total_keywords})
+
+
+def dashboard(request):
+    print("INSIDE DASHBOARD")
+    if request.method == "POST":
+        # register_form = form.Dashboard(request.POST)
+        topics = request.POST.getlist('someSwitchOption001')
+        # username = request.session['user_id']
+        all_topics = models.Topics.objects.all()
+        if request.session.get('is_login', None) is not None:
+            if request.session['is_login'] == True:
+                user_id = request.session['user_id']
+                for topic in all_topics:
+                    user_topic, created = models.UserTopic.objects.get_or_create(
+                        topic_id=topic.id,
+                        user_id=user_id, defaults={
+                            'total_count': 0,
+                            'last_page_count': 0,
+                            'last_page_id_of_topic': 0})
+                    if str(topic.id) in topics:
+                        user_topic.topic_score = 0.75
+                    else:
+                        user_topic.topic_score = 0.5
+                    user_topic.last_page_id_of_topic = 0
+                    user_topic.save()
+
+            return redirect('/wikipage/1/')
+
+    return render(request, 'dashboard.html')
 
 
 def index(request):
@@ -184,7 +232,7 @@ def monitor(request):
 def login(request):
     #send_mail('subject', 'message', 'pengyuzhou2017@sina.com', ['pengyuzhou760783896@gmail.com'], fail_silently=False)
     if request.session.get('is_login',None):
-        return redirect("/wikipage/")
+        return redirect("/dashboard/")
     #test error 500
     #test_error_500_view()
     if request.method == "POST":
@@ -200,7 +248,8 @@ def login(request):
                     request.session['user_id'] = user.id
                     request.session['user_name'] = user.name
                     request.session['user_page_id'] = 1
-                    return redirect('/wikipage/1')
+                    return redirect('/dashboard/')
+                    # return redirect('/wikipage/1')
                 else:
                     message = "Password incorrect"
             except:

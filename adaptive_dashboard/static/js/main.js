@@ -19,20 +19,7 @@ function CheckPageId() {
     }
     if (pageCounter >= 10) {
         btn2.classList.add("hide-me");
-
     }
-    // if (pageCounter > 1 && pageCounter <= 9) {
-    //     $.ajax({
-    //         url: "/ajax/",
-    //         type: "POST",
-    //         data: newPageId,
-    //         cache: false,
-    //         dataType: "json",
-    //         success: function (resp) {
-    //             alert("resp: " + resp.name);
-    //         }
-    //     });
-    // }
 }
 
 
@@ -158,14 +145,14 @@ function hide(obj) {
 }
 
 $("#btn1").click(function(event){
-    $.get('/page-change', {'last-page':pageId, 'topic': page['topics']}, function(data) {
+    $.get('/page-change', {'last-page':pageId, 'new-page':pageId-1, 'topic': page['topics']}, function(data) {
         console.log(data);
     });
     window.location.href = "../" + (pageId-1);
 });
 
 $("#btn2").click(function(event){
-    $.get('/page-change', {'last-page':pageId, 'topic': page['topics']}, function(data) {
+    $.get('/page-change', {'last-page':pageId, 'new-page':pageId+1, 'topic': page['topics']}, function(data) {
         console.log(data);
     });
     window.location.href = "../"+(pageId+1);
