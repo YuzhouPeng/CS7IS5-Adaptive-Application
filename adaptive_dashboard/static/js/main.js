@@ -1,8 +1,10 @@
 var pageCounter = 1;
 // var animalContainer = document.getElementById("animal-info");
 var btn = document.getElementById("btn");
+var btnFirst = document.getElementById("btnfirst");
 var btn1 = document.getElementById("btn1");
 var btn2 = document.getElementById("btn2");
+var btnLast = document.getElementById("btnlast");
 var close = document.getElementsByClassName('close');
 var popup = document.getElementById('popup');
 var popupButton = document.getElementsByClassName('popup');
@@ -17,7 +19,7 @@ function CheckPageId() {
     if (pageCounter <= 1) {
         btn1.classList.add("hide-me");
     }
-    if (pageCounter >= 10) {
+    if (pageCounter >= 13) {
         btn2.classList.add("hide-me");
     }
 }
@@ -144,6 +146,13 @@ function hide(obj) {
     screen.style.display = 'none';
 }
 
+$("#btnfirst").click(function(event){
+    $.get('/page-change', {'last-page':pageId, 'new-page':1, 'topic': page['topics']}, function(data) {
+        console.log(data);
+    });
+    window.location.href = "../" + 1;
+});
+
 $("#btn1").click(function(event){
     $.get('/page-change', {'last-page':pageId, 'new-page':pageId-1, 'topic': page['topics']}, function(data) {
         console.log(data);
@@ -156,6 +165,13 @@ $("#btn2").click(function(event){
         console.log(data);
     });
     window.location.href = "../"+(pageId+1);
+});
+
+$("#btnlast").click(function(event){
+    $.get('/page-change', {'last-page':pageId, 'new-page':13, 'topic': page['topics']}, function(data) {
+        console.log(data);
+    });
+    window.location.href = "../" + 13;
 });
 
 // close[0].addEventListener("click", function () {

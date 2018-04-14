@@ -10,9 +10,13 @@
     {% block title %}Main Page{% endblock %}
     {% block content %}
         {% if request.session.is_login %}
-            <h1>Welcome back,{{ request.session.user_name }}</h1>
+            <h1>Welcome back, {{ request.session.user_name }} </h1> <br>
+            <a id="continue-browsing" href={{ request.session.current_page }}>
+                <button id="btn1">continue browsing</button>
+            </a>
         {% else %}
-            <h1>You need to login to access management system</h1>
+            <h1>Welcome to AdaptivePedia </h1> Please <a href="/login/">Log in</a> to continue. <br> or
+            <a href="/register/">Register</a> if you are a new user.
         {% endif %}
     {% endblock %}
 

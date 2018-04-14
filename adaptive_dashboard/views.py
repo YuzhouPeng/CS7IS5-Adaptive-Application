@@ -82,10 +82,15 @@ def page_change(request):
             user_topic.save()
 
         new_page_id = int(request.GET.get('new-page', None))
+        user = models.User.objects.get(id = user_id)
+        user.last_visited_page = new_page_id
+        user.save()
+        request.session['current_page'] = '/wikipage/' + str(new_page_id)
         new_page_topic_id = models.Page.objects.get(id=new_page_id).topics_id
 
         new_user_topic = models.UserTopic.objects.get(topic_id=new_page_topic_id, user_id=user_id)
         new_user_topic.model_updated = 0
+        new_user_topic.last_page_count = 0
         new_user_topic.save()
 
         return HttpResponse(json.dumps({"status": "page change event noted."}))
@@ -143,7 +148,6 @@ def wikipage(request, pageid):
 
 
 def dashboard(request):
-    print("INSIDE DASHBOARD")
     if request.method == "POST":
         # register_form = form.Dashboard(request.POST)
         topics = request.POST.getlist('someSwitchOption001')
@@ -166,7 +170,8 @@ def dashboard(request):
                     user_topic.last_page_id_of_topic = 0
                     user_topic.save()
 
-            return redirect('/wikipage/1/')
+            return redirect(request.session['current_page'])
+            # return redirect('/wikipage/1/')
 
     return render(request, 'dashboard.html')
 
@@ -246,9 +251,18 @@ def login(request):
                 if user.password == hash_code(password):
                     request.session['is_login'] = True
                     request.session['user_id'] = user.id
-                    request.session['user_name'] = user.name
+                    request.session['user_name'] = user.name.capitalize()
                     request.session['user_page_id'] = 1
-                    return redirect('/dashboard/')
+                    request.session['current_page'] = '/wikipage/' + str(user.last_visited_page)
+                    if user.new_user == 1:
+                        user.new_user = 0
+                        user.save()
+                        return redirect('/dashboard/')
+                    else:
+                        request.session['current_page'] = '/wikipage/' + str(user.last_visited_page)
+                        return redirect('/index/')
+                        # ret_page = '/wikipage/' + str(user.last_visited_page)
+                        # return redirect(ret_page)
                     # return redirect('/wikipage/1')
                 else:
                     message = "Password incorrect"

@@ -68,7 +68,9 @@ p {
 }
 
 .highlight {
-    background-color: yellow;
+    /*background-color: yellow;*/
+    background-color: #fff2ac;
+    background-image: linear-gradient(to right, #ffe359 0%, #fff2ac 100%);
 }
 
 /*#popup{*/
@@ -132,4 +134,9 @@ p {
 #show-num{
     position: absolute;
     right: 20%;
+}
+
+#continue-browsing{
+    position: absolute;
+    right: 50%;
 }

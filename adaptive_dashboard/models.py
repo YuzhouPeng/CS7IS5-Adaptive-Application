@@ -18,6 +18,8 @@ class User(models.Model):
     email = models.CharField(max_length=128)
     sex = models.CharField(max_length=32, choices=gender, default='Male')
     create_time = models.DateTimeField(auto_now_add=True)
+    last_visited_page = models.IntegerField(default=1)
+    new_user = models.IntegerField(default=1)
 
     def __str__(self):
         return self.name
